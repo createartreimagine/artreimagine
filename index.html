@@ -698,7 +698,7 @@
 
 
     // ==========================================================================
-    // PRESERVED APPLICATION JAVASCRIPT LOGIC + COATS RED OUTLINE FEATURE
+    // PRESERVED APPLICATION JAVASCRIPT LOGIC + COATS RED OUTLINE TRANSITION FEATURE
     // ==========================================================================
     const state = {
         image: null, brightness: 100, contrast: 100, columns: 4, filter: 'none', 
@@ -723,7 +723,7 @@
     function toggleFullscreen() {
         if (!document.fullscreenElement) { 
             document.documentElement.requestFullscreen(); 
-            document.getElementById('btnFullscreen').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg> Exit Fullscreen`;
+            document.getElementById('btnFullscreen').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16v3a2 2 0 0 0 2 2h3"/></svg> Exit Fullscreen`;
         } else { 
             document.exitFullscreen(); 
             document.getElementById('btnFullscreen').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg> Fullscreen`; 
@@ -916,33 +916,40 @@
             const imgData = els.ctx.getImageData(0, 0, w, h); const data = imgData.data;
             const bands = state.pmTotalCoats; const current = state.pmCoat - 1;
             
+            let coatMap = new Int32Array(w * h);
             for (let y = 0; y < h; y++) {
                 for (let x = 0; x < w; x++) {
                     const i = (y * w + x) * 4;
+                    const luma = data[i]*0.2126 + data[i+1]*0.7152 + data[i+2]*0.0722;
+                    coatMap[y * w + x] = Math.min(bands - 1, Math.floor((luma / 256) * bands));
+                }
+            }
+
+            for (let y = 0; y < h; y++) {
+                for (let x = 0; x < w; x++) {
+                    const idx = y * w + x;
+                    const i = idx * 4;
                     const r = data[i], g = data[i+1], b = data[i+2];
-                    const luma = (r*0.2126 + g*0.7152 + b*0.0722);
-                    const coatIdx = Math.min(bands - 1, Math.floor((luma / 256) * bands));
+                    const luma = r*0.2126 + g*0.7152 + b*0.0722;
+                    const coatIdx = coatMap[idx];
 
-                    if (coatIdx === current) {
-                        // Check if it's an edge pixel to outline in red line
+                    let isActiveOrAdjacent = (coatIdx === current) || (state.pmCoat > 1 && coatIdx === current - 1);
+
+                    if (isActiveOrAdjacent) {
                         let isEdge = false;
-                        if (x > 0) {
-                            const leftIdx = (y * w + (x - 1)) * 4;
-                            const leftLuma = data[leftIdx]*0.2126 + data[leftIdx+1]*0.7152 + data[leftIdx+2]*0.0722;
-                            if (Math.min(bands - 1, Math.floor((leftLuma / 256) * bands)) !== coatIdx) isEdge = true;
-                        }
-                        if (y > 0) {
-                            const topIdx = ((y - 1) * w + x) * 4;
-                            const topLuma = data[topIdx]*0.2126 + data[topIdx+1]*0.7152 + data[topIdx+2]*0.0722;
-                            if (Math.min(bands - 1, Math.floor((topLuma / 256) * bands)) !== coatIdx) isEdge = true;
-                        }
+                        if (x > 0 && coatMap[y * w + (x - 1)] !== coatIdx) isEdge = true;
+                        else if (x < w - 1 && coatMap[y * w + (x + 1)] !== coatIdx) isEdge = true;
+                        else if (y > 0 && coatMap[(y - 1) * w + x] !== coatIdx) isEdge = true;
+                        else if (y < h - 1 && coatMap[(y + 1) * w + x] !== coatIdx) isEdge = true;
 
-                        if (state.pmEdge && isEdge) {
-                            data[i] = 255;   // Red R
-                            data[i+1] = 0; // Green G
-                            data[i+2] = 0; // Blue B
+                        if (isEdge) {
+                            data[i] = 255;   // Bright Red R
+                            data[i+1] = 0;   // Green G
+                            data[i+2] = 0;   // Blue B
+                        } else if (coatIdx === current) {
+                            data[i] = r; data[i+1] = g; data[i+2] = b; 
                         } else {
-                            data[i] = r * 0.4; data[i+1] = g * 0.4; data[i+2] = b * 0.4;
+                            data[i] = r * 0.5; data[i+1] = g * 0.5; data[i+2] = b * 0.5; 
                         }
                     } else {
                         if (state.pmFocus) {
