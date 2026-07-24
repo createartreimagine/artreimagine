@@ -76,9 +76,9 @@
             touch-action: manipulation;
         }
 
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 4px; border: 3px solid var(--bg-surface); }
+        ::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 4px; }
 
         /* ==========================================================================
            LUXURIOUS FULLSCREEN 60 FPS MORPHING PARTICLE VISUALIZER HOMEPAGE
@@ -87,7 +87,7 @@
             position: absolute; top: 0; left: 0; width: 100vw; height: 100dvh;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             background: #000000;
-            z-index: 9999; overflow: hidden;
+            z-index: 9999; overflow: hidden; padding: 16px;
         }
 
         #visualizerCanvas {
@@ -102,8 +102,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            max-width: 1200px;
+            padding: 10px;
+            max-width: 100%;
             animation: cardEntrance 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
@@ -114,10 +114,10 @@
 
         .pixel-title {
             font-family: 'Press Start 2P', monospace !important;
-            font-size: 45pt !important;
+            font-size: clamp(24pt, 6vw, 45pt) !important;
             line-height: 1.3 !important;
             letter-spacing: -1px !important;
-            margin-bottom: 16px !important;
+            margin-bottom: 12px !important;
             text-transform: lowercase !important;
             text-align: center !important;
             background: linear-gradient(270deg, #ff007f, #7f00ff, #00d2ff, #3fb950, #ff8800, #ff007f);
@@ -126,9 +126,9 @@
             background-clip: text;
             color: transparent !important;
             animation: vibrantGradientShift 8s ease infinite, textFloatGlow 3s ease-in-out infinite alternate;
-            text-shadow: 5px 5px 0px rgba(0, 0, 0, 0.95), 
-                         9px 9px 0px rgba(47, 129, 247, 0.35), 
-                         0 0 45px rgba(255, 0, 127, 0.6);
+            text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.95), 
+                         7px 7px 0px rgba(47, 129, 247, 0.35), 
+                         0 0 35px rgba(255, 0, 127, 0.6);
             word-break: break-word;
             max-width: 100%;
             will-change: transform, filter;
@@ -145,17 +145,17 @@
             100% { transform: translateY(-4px); filter: drop-shadow(0 10px 24px rgba(0,210,255,0.7)); }
         }
 
-        .welcome-content p { color: var(--text-secondary); font-size: 13px; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 4px; font-family: 'JetBrains Mono', monospace; text-align: center; }
+        .welcome-content p { color: var(--text-secondary); font-size: 11px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 3px; font-family: 'JetBrains Mono', monospace; text-align: center; }
 
         /* Canvas Size Inputs in Inches */
         .canvas-size-container {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             justify-content: center;
             align-items: center;
-            margin-bottom: 24px;
-            background: rgba(22, 27, 34, 0.6);
-            padding: 12px 20px;
+            margin-bottom: 20px;
+            background: rgba(22, 27, 34, 0.75);
+            padding: 10px 16px;
             border-radius: var(--radius-md);
             border: 1px solid var(--border-default);
             backdrop-filter: blur(10px);
@@ -165,11 +165,11 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 4px;
+            gap: 2px;
         }
 
         .size-input-group label {
-            font-size: 10px;
+            font-size: 9px;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--text-secondary);
@@ -180,11 +180,11 @@
             background: var(--bg-card);
             border: 1px solid var(--border-default);
             color: var(--text-primary);
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: var(--radius-sm);
-            width: 80px;
+            width: 70px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
+            font-size: 13px;
             outline: none;
             text-align: center;
             transition: border-color 0.2s;
@@ -196,10 +196,10 @@
 
         .size-unit-label {
             color: var(--text-muted);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             align-self: flex-end;
-            padding-bottom: 8px;
+            padding-bottom: 6px;
         }
 
         .btn-text-upload {
@@ -207,7 +207,7 @@
             display: inline-flex; align-items: center; justify-content: center;
             background: linear-gradient(135deg, rgba(47, 129, 247, 0.25) 0%, rgba(163, 113, 247, 0.25) 100%);
             border: 1px solid rgba(47, 129, 247, 0.6);
-            color: var(--text-primary); padding: 14px 32px; font-size: 13px; font-weight: 600;
+            color: var(--text-primary); padding: 12px 28px; font-size: 12px; font-weight: 600;
             border-radius: var(--radius-full); cursor: pointer;
             box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.2);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -227,17 +227,47 @@
         .fade-out { animation: fadeOut 0.5s forwards cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; }
         @keyframes fadeOut { to { opacity: 0; transform: scale(1.02); visibility: hidden; } }
 
-        /* App UI Container Layout Styling */
+        /* App UI Container Layout Styling - Fully Responsive Mobile Web App Shell */
         .app-container { display: none; flex-direction: column; height: 100vh; height: 100dvh; width: 100vw; background-color: var(--bg-base); }
         .top-nav { height: 48px; background: var(--bg-surface); border-bottom: 1px solid var(--border-default); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--space-3); flex-shrink: 0; z-index: 100; }
-        .main-workspace { display: flex; flex: 1; overflow: hidden; position: relative; }
-        .sidebar { background: var(--bg-surface); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; z-index: 10; }
+        
+        .main-workspace { display: flex; flex: 1; overflow: hidden; position: relative; flex-direction: row; }
+        
+        .sidebar { background: var(--bg-surface); display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; flex-shrink: 0; z-index: 10; }
         .sidebar-left { width: 280px; border-right: 1px solid var(--border-default); }
         .sidebar-right { width: 320px; border-left: 1px solid var(--border-default); background: var(--bg-base); }
-        .center-canvas-area { flex: 1; position: relative; display: flex; flex-direction: column; background-color: var(--bg-base); overflow: hidden; }
-        .center-canvas-area::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.4) 100%); z-index: 1; }
-        .center-canvas-area::after { content: ''; position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(var(--border-default) 1px, transparent 1px); background-size: 24px 24px; opacity: 0.5; z-index: 0; }
-        .bottom-status-bar { height: 32px; background: var(--accent-blue); color: #ffffff; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--space-3); font-size: 12px; font-weight: 500; flex-shrink: 0; z-index: 100; }
+
+        .center-canvas-area {
+            flex: 1; position: relative;
+            display: flex; flex-direction: column;
+            background-color: var(--bg-base);
+            overflow: hidden;
+        }
+        .center-canvas-area::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.4) 100%);
+            z-index: 1;
+        }
+        .center-canvas-area::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background-image: radial-gradient(var(--border-default) 1px, transparent 1px);
+            background-size: 24px 24px; opacity: 0.5; z-index: 0;
+        }
+
+        .bottom-status-bar {
+            height: 32px; background: var(--accent-blue); color: #ffffff;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 var(--space-3); font-size: 11px; font-weight: 500;
+            flex-shrink: 0; z-index: 100;
+        }
+
+        /* Mobile Responsive Adaptations for Workspace Panels */
+        @media (max-width: 900px) {
+            .main-workspace { flex-direction: column; }
+            .sidebar-left { width: 100%; height: auto; max-height: 180px; border-right: none; border-bottom: 1px solid var(--border-default); }
+            .sidebar-right { width: 100%; height: auto; max-height: 250px; border-left: none; border-top: 1px solid var(--border-default); }
+            .center-canvas-area { flex: 1; }
+        }
 
         .brand-logo { font-weight: 700; font-size: 14px; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
         .text-mono { font-family: 'JetBrains Mono', monospace; }
@@ -245,95 +275,119 @@
         details summary::-webkit-details-marker { display: none; }
         details summary {
             list-style: none; display: flex; align-items: center; justify-content: space-between;
-            padding: 12px var(--space-3); cursor: pointer; font-weight: 600; font-size: 12px;
-            text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);
+            padding: 10px var(--space-3); cursor: pointer;
+            font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--text-secondary); user-select: none;
         }
         details summary:hover { background: var(--bg-hover); color: var(--text-primary); }
         details summary::after {
-            content: ""; width: 16px; height: 16px;
+            content: ""; width: 14px; height: 14px;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238B949E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
             background-size: cover; transition: transform 0.2s;
         }
         details:not([open]) summary::after { transform: rotate(-90deg); }
-        .details-content { padding: 0 var(--space-3) var(--space-3) var(--space-3); display: flex; flex-direction: column; gap: 12px; }
+        .details-content { padding: 0 var(--space-3) var(--space-3) var(--space-3); display: flex; flex-direction: column; gap: 10px; }
 
         .btn {
             display: inline-flex; justify-content: center; align-items: center; gap: 8px;
-            padding: 8px 14px; font-size: 13px; font-weight: 500; font-family: inherit;
+            padding: 8px 12px; font-size: 12px; font-weight: 500; font-family: inherit;
             border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s ease; user-select: none;
         }
         .btn input[type="file"] { display: none; }
         .btn-primary { background: var(--accent-blue); color: #fff; border: 1px solid transparent; }
-        .btn-primary:hover { background: #388BFD; }
+        .btn-primary:hover { background: var(--accent-blue-hover); }
         .btn-secondary { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-default); }
         .btn-secondary:hover { background: var(--bg-hover); }
         .btn-ghost { background: transparent; color: var(--text-secondary); border: 1px solid transparent; padding: 6px; }
         .btn-ghost:hover { background: var(--bg-hover); color: var(--text-primary); }
-        .btn-pm { background: var(--accent-pm); color: #fff; border: 1px solid transparent; width: 100%; font-weight: 600; padding: 12px; }
+        .btn-pm { background: var(--accent-pm); color: #fff; border: 1px solid transparent; width: 100%; font-weight: 600; padding: 10px; }
         .btn-pm.active-mode { background: var(--bg-card); border: 1px solid var(--accent-pm); color: var(--accent-pm); }
 
-        .segmented-control { display: flex; background: var(--bg-base); border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: 4px; gap: 4px; }
-        .segmented-btn { flex: 1; text-align: center; font-size: 12px; padding: 8px 4px; border-radius: var(--radius-sm); color: var(--text-secondary); cursor: pointer; border: 1px solid transparent; background: transparent; }
+        .segmented-control {
+            display: flex; background: var(--bg-base); border: 1px solid var(--border-default);
+            border-radius: var(--radius-md); padding: 3px; gap: 3px;
+        }
+        .segmented-btn {
+            flex: 1; text-align: center; font-size: 11px; padding: 6px 2px;
+            border-radius: var(--radius-sm); color: var(--text-secondary); cursor: pointer;
+            border: 1px solid transparent; background: transparent; font-weight: 500;
+        }
         .segmented-btn:hover { color: var(--text-primary); background: var(--bg-hover); }
-        .segmented-btn.active, .segmented-btn.pm-active, .segmented-btn.ai-active { background: var(--bg-card); color: var(--text-primary); border-color: var(--border-default); }
+        .segmented-btn.active, .segmented-btn.pm-active, .segmented-btn.ai-active {
+            background: var(--bg-card); color: var(--text-primary); border-color: var(--border-default);
+        }
         .segmented-btn.pm-active { border-color: var(--accent-pm); color: var(--accent-pm); }
         .segmented-btn.ai-active { border-color: var(--accent-ai); color: var(--accent-ai); }
 
         .slider-group { display: flex; flex-direction: column; gap: 6px; }
-        .slider-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); }
+        .slider-header { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); }
         .slider-header span:last-child { font-family: 'JetBrains Mono', monospace; color: var(--text-primary); }
-        input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; background: transparent; padding: 8px 0; cursor: pointer; }
+        
+        input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; background: transparent; padding: 6px 0; cursor: pointer; outline: none; }
         input[type="range"]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: var(--border-default); border-radius: 99px; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--text-primary); margin-top: -6px; border: 2px solid var(--bg-surface); }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; height: 14px; width: 14px; border-radius: 50%;
+            background: var(--text-primary); margin-top: -5px; border: 2px solid var(--bg-surface);
+        }
 
-        .canvas-wrapper { flex: 1; overflow: auto; display: flex; justify-content: center; align-items: center; padding: 32px; z-index: 2; }
-        canvas { display: block; box-shadow: var(--shadow-float); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); cursor: crosshair; touch-action: none; background: var(--bg-surface); }
+        .canvas-wrapper { 
+            flex: 1; overflow: auto; display: flex; justify-content: center; align-items: center; 
+            padding: 20px; z-index: 2; -webkit-overflow-scrolling: touch;
+        }
+        canvas { 
+            display: block; box-shadow: var(--shadow-float); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm); cursor: crosshair; touch-action: none; background: var(--bg-surface); 
+        }
 
         .zoom-bar {
-            position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
             background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border); border-radius: 99px; padding: 6px 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.6); z-index: 20;
+            border: 1px solid var(--glass-border); border-radius: 99px;
+            padding: 4px 12px; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.6); z-index: 20;
         }
-        .zoom-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 16px; cursor: pointer; padding: 4px; }
+        .zoom-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 14px; cursor: pointer; padding: 4px; display: flex; align-items: center; }
         .zoom-btn:hover { color: var(--text-primary); }
-        .zoom-level { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; width: 45px; text-align: center; color: var(--text-primary); }
+        .zoom-level { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; width: 40px; text-align: center; color: var(--text-primary); }
 
-        .ai-palette-container { display: flex; height: 32px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border-default); }
+        .ai-palette-container { display: flex; height: 28px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border-default); }
         .ai-palette-swatch { flex: 1; transition: flex 0.2s; cursor: pointer; }
-        .ai-palette-swatch:hover { flex: 1.5; }
 
         .color-preview-block {
-            width: 100%; height: 80px; border-radius: var(--radius-md); background: #171717;
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1), inset 0 2px 10px rgba(0,0,0,0.5);
-            display: flex; align-items: flex-end; padding: 12px; margin-bottom: 12px;
+            width: 100%; height: 70px; border-radius: var(--radius-md); background: #171717; 
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1), inset 0 2px 10px rgba(0,0,0,0.5); 
+            display: flex; align-items: flex-end; padding: 10px; transition: all var(--trans-med); margin-bottom: 10px;
         }
-        .color-name { font-size: 14px; font-weight: 700; color: white; text-shadow: 0 1px 4px rgba(0,0,0,0.9); }
+        .color-name { font-size: 13px; font-weight: 700; color: white; text-shadow: 0 1px 4px rgba(0,0,0,0.9); }
 
-        .recipe-bars { display: flex; flex-direction: column; gap: 10px; }
-        .recipe-row { display: flex; flex-direction: column; gap: 4px; }
-        .recipe-labels { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--text-secondary); }
-        .recipe-bar-container { width: 100%; background: var(--bg-active); height: 6px; border-radius: 99px; overflow: hidden; border: 1px solid var(--border-default); }
+        .recipe-bars { display: flex; flex-direction: column; gap: 8px; }
+        .recipe-row { display: flex; flex-direction: column; gap: 3px; }
+        .recipe-labels { display: flex; justify-content: space-between; align-items: center; font-size: 10px; font-family: 'JetBrains Mono', monospace; color: var(--text-secondary);}
+        .recipe-bar-container { width: 100%; background: var(--bg-active); height: 5px; border-radius: 99px; overflow: hidden; border: 1px solid var(--border-default); }
         .recipe-bar { height: 100%; background: #fff; width: 0%; transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 99px; }
 
-        .step-card { background: var(--bg-card); border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: 12px; display: flex; gap: 12px; align-items: center; }
-        .step-num { font-size: 11px; font-weight: 700; color: var(--text-secondary); background: var(--bg-surface); padding: 4px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-default); }
+        .step-card { 
+            background: var(--bg-card); border: 1px solid var(--border-default); border-radius: var(--radius-md); 
+            padding: 10px; display: flex; gap: 10px; align-items: center; 
+        }
+        .step-num { font-size: 10px; font-weight: 700; color: var(--text-secondary); background: var(--bg-surface); padding: 3px 6px; border-radius: var(--radius-sm); border: 1px solid var(--border-default); }
         .step-info { flex: 1; }
-        .step-title { font-size: 12px; font-weight: 600; margin-bottom: 2px; color: var(--text-primary); }
-        .step-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
-        .step-swatch { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border-default); box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
+        .step-title { font-size: 11px; font-weight: 600; margin-bottom: 2px; color: var(--text-primary); }
+        .step-desc { font-size: 10px; color: var(--text-muted); line-height: 1.3; }
+        .step-swatch { width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--border-default); box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
 
         .pm-card { background: linear-gradient(180deg, rgba(255, 0, 127, 0.05) 0%, transparent 100%); border-bottom: 1px solid rgba(255, 0, 127, 0.2); }
-        .pm-badge { color: var(--accent-pm); font-size: 10px; border: 1px solid var(--accent-pm); padding: 2px 6px; border-radius: 99px; text-transform: uppercase; font-weight: 700; background: rgba(255,0,127,0.1); }
+        .pm-badge { color: var(--accent-pm); font-size: 9px; border: 1px solid var(--accent-pm); padding: 2px 5px; border-radius: 99px; text-transform: uppercase; font-weight: 700; background: rgba(255,0,127,0.1); }
 
         .hidden { display: none !important; }
-        .mt-2 { margin-top: 16px; }
-        .p-3 { padding: 24px; }
+        .mt-2 { margin-top: 12px; }
+        .p-3 { padding: 16px; }
         .flex-between { display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
 
-<!-- PWA / Web App Welcome Screen -->
+<!-- PWA / Mobile Web App Welcome Screen -->
 <div class="welcome-screen" id="welcomeScreen">
     <canvas id="visualizerCanvas"></canvas>
 
@@ -341,13 +395,14 @@
         <h1 class="pixel-title">art_reimagine</h1>
         <p>AI Cinematic Studio</p>
         
+        <!-- Canvas Size in Inches Inputs -->
         <div class="canvas-size-container">
             <div class="size-input-group">
                 <label for="inputWidthInches">Width</label>
                 <input type="number" id="inputWidthInches" value="10" min="1" max="100" step="0.5">
             </div>
             <span class="size-unit-label">IN</span>
-            <div style="color: var(--text-muted); font-weight: bold; align-self: flex-end; padding-bottom: 8px;">×</div>
+            <div style="color: var(--text-muted); font-weight: bold; align-self: flex-end; padding-bottom: 6px;">×</div>
             <div class="size-input-group">
                 <label for="inputHeightInches">Height</label>
                 <input type="number" id="inputHeightInches" value="8" min="1" max="100" step="0.5">
@@ -367,27 +422,28 @@
     
     <nav class="top-nav">
         <div class="brand-logo">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 22h20L12 2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 22h20L12 2z"/></svg>
             art_reimagine
         </div>
-        <div style="display: flex; gap: 16px;">
+        <div style="display: flex; gap: 10px;">
             <button class="btn btn-secondary" onclick="toggleFullscreen()" id="btnFullscreen">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
                 Fullscreen
             </button>
             <button class="btn btn-primary" onclick="downloadImage()">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Export Canvas
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export
             </button>
         </div>
     </nav>
 
     <div class="main-workspace">
         
+        <!-- LEFT SIDEBAR -->
         <aside class="sidebar sidebar-left" id="sidebarLeft">
             <div class="p-3 panel-section">
                 <label class="btn btn-secondary" style="width: 100%;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
                     Change Image
                     <input type="file" id="imageLoader" accept="image/*" style="display: none;" />
                 </label>
@@ -395,7 +451,7 @@
 
             <div class="p-3 panel-section" style="background: rgba(255,0,127,0.02);">
                 <button class="btn btn-pm" id="btnTogglePaintMode" onclick="togglePaintMode()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18.37 2.63-1.42 1.42-3.18-3.18a2 2 0 0 0-2.82 0l-8.5 8.5a2 2 0 0 0 0 2.82l6.37 6.37a2 2 0 0 0 2.82 0l8.5-8.5a2 2 0 0 0 0-2.82l-3.18-3.18 1.42-1.42a2 2 0 0 0-2.83-2.83Z"/><path d="m2 22 4-4"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18.37 2.63-1.42 1.42-3.18-3.18a2 2 0 0 0-2.82 0l-8.5 8.5a2 2 0 0 0 0 2.82l6.37 6.37a2 2 0 0 0 2.82 0l8.5-8.5a2 2 0 0 0 0-2.82l-3.18-3.18 1.42-1.42a2 2 0 0 0-2.83-2.83Z"/><path d="m2 22 4-4"/></svg>
                     Enter Paint Mode
                 </button>
             </div>
@@ -416,45 +472,47 @@
                 <summary>AI Cinematic Engine</summary>
                 <div class="details-content">
                     <button class="btn btn-secondary" id="btnAiPalette" onclick="toggleAiPalette()" style="justify-content: flex-start;">
-                        <svg style="color: var(--accent-ai);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                        <svg width="14" height="14" style="color: var(--accent-ai);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
                         Extract Master Palette
                     </button>
                     <button class="btn btn-secondary" id="btnAiAtmos" onclick="toggleAiAtmosphere()" style="justify-content: flex-start;">
-                        <svg style="color: var(--accent-ai);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
+                        <svg width="14" height="14" style="color: var(--accent-ai);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
                         Auto-Atmosphere
                     </button>
                     <button class="btn btn-secondary" id="btnAiRim" onclick="toggleAiRimLight()" style="justify-content: flex-start;">
-                        <svg style="color: var(--accent-ai);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                        <svg width="14" height="14" style="color: var(--accent-ai);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
                         Volumetric Rim Light
                     </button>
                 </div>
             </details>
         </aside>
 
+        <!-- CENTER CANVAS WORKSPACE -->
         <main class="center-canvas-area" id="mainContent">
             <div class="canvas-wrapper" id="canvasWrapper">
                 <canvas id="artCanvas" style="opacity: 0;"></canvas>
             </div>
             
             <div class="zoom-bar" id="zoomBar">
-                <button class="zoom-btn" onclick="adjustZoom(-0.1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-                <input type="range" id="slZoom" min="0.1" max="3" step="0.05" value="1" style="width: 120px; padding: 0; margin: 0;">
-                <button class="zoom-btn" onclick="adjustZoom(0.1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+                <button class="zoom-btn" onclick="adjustZoom(-0.1)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+                <input type="range" id="slZoom" min="0.1" max="3" step="0.05" value="1" style="width: 90px; padding: 0; margin: 0;">
+                <button class="zoom-btn" onclick="adjustZoom(0.1)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
                 <div class="zoom-level" id="zoomLevelText">100%</div>
             </div>
         </main>
 
+        <!-- RIGHT SIDEBAR -->
         <aside class="sidebar sidebar-right" id="sidebarRight">
             <details class="panel-section hidden pm-card" id="paintModeModule" open>
                 <summary><span class="flex-between" style="gap:8px;"><span class="pm-badge">Active</span> Paint Assistant</span></summary>
                 <div class="details-content">
-                    <div class="step-card" style="padding: 12px; background: var(--bg-active);">
-                        <button class="btn btn-ghost" onclick="adjustCoat(-1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+                    <div class="step-card" style="padding: 10px; background: var(--bg-active);">
+                        <button class="btn btn-ghost" onclick="adjustCoat(-1)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
                         <div style="text-align: center; flex: 1;">
-                            <div id="pmCoatLabel" style="font-weight: 700; font-size: 13px; color: var(--text-primary);">Coat 1 / 5</div>
-                            <div id="pmCoatDesc" style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px;">Background / Wash</div>
+                            <div id="pmCoatLabel" style="font-weight: 700; font-size: 12px; color: var(--text-primary);">Coat 1 / 5</div>
+                            <div id="pmCoatDesc" style="font-size: 9px; color: var(--text-muted); text-transform: uppercase; margin-top: 3px;">Background / Wash</div>
                         </div>
-                        <button class="btn btn-ghost" onclick="adjustCoat(1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+                        <button class="btn btn-ghost" onclick="adjustCoat(1)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
                     </div>
                     
                     <div class="recipe-bar-container"><div class="recipe-bar" id="pmProgressBar" style="width: 20%; background: var(--accent-pm); box-shadow: 0 0 10px var(--accent-pm);"></div></div>
@@ -553,7 +611,7 @@
     </div>
 
     <footer class="bottom-status-bar">
-        <div style="display: flex; gap: 16px;">
+        <div style="display: flex; gap: 10px;">
             <span><span style="color:var(--success); margin-right:4px;">●</span> Studio Ready</span>
         </div>
         <div class="text-mono">art_reimagine v2.0-pro</div>
@@ -737,10 +795,10 @@
     function toggleFullscreen() {
         if (!document.fullscreenElement) { 
             document.documentElement.requestFullscreen(); 
-            document.getElementById('btnFullscreen').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16v3a2 2 0 0 0 2 2h3"/></svg> Exit Fullscreen`;
+            document.getElementById('btnFullscreen').innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg> Exit`;
         } else { 
             document.exitFullscreen(); 
-            document.getElementById('btnFullscreen').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg> Fullscreen`; 
+            document.getElementById('btnFullscreen').innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg> Fullscreen`; 
         }
     }
 
@@ -808,7 +866,7 @@
         const btn = document.getElementById('btnTogglePaintMode');
         
         if (state.paintMode) {
-            btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Exit Paint Mode`;
+            btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Exit Paint Mode`;
             btn.classList.add('active-mode');
             els.pmModule.classList.remove('hidden');
             els.appGuideModule.classList.add('hidden'); 
@@ -816,7 +874,7 @@
             els.analysisLensModule.style.pointerEvents = "none";
             updateCoatUI();
         } else {
-            btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18.37 2.63-1.42 1.42-3.18-3.18a2 2 0 0 0-2.82 0l-8.5 8.5a2 2 0 0 0 0 2.82l6.37 6.37a2 2 0 0 0 2.82 0l8.5-8.5a2 2 0 0 0 0-2.82l-3.18-3.18 1.42-1.42a2 2 0 0 0-2.83-2.83Z"/><path d="m2 22 4-4"/></svg> Enter Paint Mode`;
+            btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18.37 2.63-1.42 1.42-3.18-3.18a2 2 0 0 0-2.82 0l-8.5 8.5a2 2 0 0 0 0 2.82l6.37 6.37a2 2 0 0 0 2.82 0l8.5-8.5a2 2 0 0 0 0-2.82l-3.18-3.18 1.42-1.42a2 2 0 0 0-2.83-2.83Z"/><path d="m2 22 4-4"/></svg> Enter Paint Mode`;
             btn.classList.remove('active-mode');
             els.pmModule.classList.add('hidden');
             els.appGuideModule.classList.remove('hidden');
@@ -1047,7 +1105,7 @@
         els.colorName.style.color = luma > 150 ? '#0D1117' : '#F0F6FC'; els.colorName.innerText = (r===23 && g===23 && b===23) ? "Cod Gray" : getColorName(r,g,b);
 
         let c = 1 - (r/255), m = 1 - (g/255), yel = 1 - (b/255); let k = Math.min(c, Math.min(m, yel));
-        c = (c-k)/(1-k)||0; m = (m-k)/(1-k)||0; yel = (yel-k)/(1-k)||0; let w = (1 - Math.max(c, m, yel, k));
+        c = (c-k)/(1-k)||0; m = (m-k)/(1-k)||0; yel = (yel-k)/(1-k)||0; w = (1 - Math.max(c, m, yel, k));
 
         els.recipeBars.innerHTML = createAcrylicBar('Titanium White', Math.round(w*100), '#ffffff') + createAcrylicBar('Phthalo Blue', Math.round(c*100), '#0ea5e9') + createAcrylicBar('Quin Magenta', Math.round(m*100), '#db2777') + createAcrylicBar('Cad Yellow', Math.round(yel*100), '#eab308') + createAcrylicBar('Mars Black', Math.round(k*100), '#555555');
         setTimeout(() => { els.recipeBars.querySelectorAll('.recipe-bar').forEach(bar => { const fw = bar.style.width; bar.style.width = '0%'; requestAnimationFrame(() => bar.style.width = fw); }); }, 10);
