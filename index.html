@@ -223,7 +223,7 @@
         @keyframes fadeOut { to { opacity: 0; transform: scale(1.02); visibility: hidden; } }
 
         /* ==========================================================================
-           PERFECT RESPONSIVE WORKSPACE LAYOUT (MOBILE & DESKTOP ALIGNMENT FIX)
+           MAIN APP WORKSPACE
            ========================================================================== */
         .app-container { 
             display: none; 
@@ -255,7 +255,6 @@
             flex-direction: row; 
         }
 
-        /* Sidebar styling with isolated vertical scrolling */
         .sidebar { 
             background: var(--bg-surface); 
             display: flex; 
@@ -276,6 +275,7 @@
             flex-direction: column; 
             background-color: var(--bg-base); 
             overflow: hidden; 
+            transition: background-color 0.3s ease;
         }
         .center-canvas-area::before { 
             content: ''; position: absolute; inset: 0; pointer-events: none; 
@@ -302,29 +302,28 @@
             z-index: 100; 
         }
 
-        /* RESPONSIVE BREAKPOINT FOR MOBILE & TABLETS (< 850px) */
         @media (max-width: 850px) {
-            .main-workspace { 
-                flex-direction: column; 
-            }
-            .sidebar-left { 
-                width: 100%; 
-                max-height: 130px; 
-                border-right: none; 
-                border-bottom: 1px solid var(--border-default); 
-            }
-            .sidebar-right { 
-                width: 100%; 
-                max-height: 180px; 
-                border-left: none; 
-                border-top: 1px solid var(--border-default); 
-                order: 3; 
-            }
-            .center-canvas-area { 
-                order: 2; 
-                flex: 1; 
-            }
+            .main-workspace { flex-direction: column; }
+            .sidebar-left { width: 100%; max-height: 130px; border-right: none; border-bottom: 1px solid var(--border-default); }
+            .sidebar-right { width: 100%; max-height: 180px; border-left: none; border-top: 1px solid var(--border-default); order: 3; }
+            .center-canvas-area { order: 2; flex: 1; }
         }
+
+        /* ==========================================================================
+           FULLSCREEN FOCUS OVERRIDES (Hides UI Tabs, Shows Only Canvas & Zoom)
+           ========================================================================== */
+        body.fullscreen-ui-active .top-nav,
+        body.fullscreen-ui-active .sidebar,
+        body.fullscreen-ui-active .bottom-status-bar {
+            display: none !important;
+        }
+        body.fullscreen-ui-active .center-canvas-area {
+            background-color: #000000; /* Pure black for immersion */
+        }
+        body.fullscreen-ui-active .center-canvas-area::after {
+            opacity: 0.15; /* Dimmer grid in fullscreen */
+        }
+        /* ========================================================================== */
 
         .brand-logo { font-weight: 700; font-size: 13px; color: var(--text-primary); display: flex; align-items: center; gap: 6px; }
         .text-mono { font-family: 'JetBrains Mono', monospace; }
@@ -401,12 +400,14 @@
             position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
             background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
             border: 1px solid var(--glass-border); border-radius: 99px;
-            padding: 3px 10px; display: flex; align-items: center; gap: 6px;
+            padding: 3px 12px; display: flex; align-items: center; gap: 6px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.6); z-index: 20;
         }
-        .zoom-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 13px; cursor: pointer; padding: 2px; display: flex; align-items: center; }
+        .zoom-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 13px; cursor: pointer; padding: 4px; display: flex; align-items: center; }
         .zoom-btn:hover { color: var(--text-primary); }
         .zoom-level { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; width: 36px; text-align: center; color: var(--text-primary); }
+        
+        .divider-v { width: 1px; height: 14px; background: rgba(255,255,255,0.15); margin: 0 4px; }
 
         .ai-palette-container { display: flex; height: 24px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border-default); }
         .ai-palette-swatch { flex: 1; transition: flex 0.2s; cursor: pointer; }
@@ -445,10 +446,8 @@
 </head>
 <body>
 
-<!-- PWA / Mobile Web App Welcome Screen -->
 <div class="welcome-screen" id="welcomeScreen">
     <canvas id="visualizerCanvas"></canvas>
-
     <div class="welcome-content">
         <h1 class="pixel-title">art_reimagine</h1>
         <p>AI Cinematic Studio</p>
@@ -474,7 +473,6 @@
     </div>
 </div>
 
-<!-- Main Application Shell -->
 <div class="app-container" id="appContainer">
     
     <nav class="top-nav">
@@ -483,7 +481,7 @@
             art_reimagine
         </div>
         <div style="display: flex; gap: 8px;">
-            <button class="btn btn-secondary" onclick="toggleFullscreen()" id="btnFullscreen">
+            <button class="btn btn-secondary" onclick="toggleFullscreen()" id="btnFullscreenNav">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
                 Full
             </button>
@@ -496,7 +494,6 @@
 
     <div class="main-workspace">
         
-        <!-- LEFT SIDEBAR -->
         <aside class="sidebar sidebar-left" id="sidebarLeft">
             <div class="p-3 panel-section">
                 <label class="btn btn-secondary" style="width: 100%;">
@@ -544,21 +541,26 @@
             </details>
         </aside>
 
-        <!-- CENTER CANVAS WORKSPACE -->
+        <!-- CENTER CANVAS WORKSPACE WITH UPDATED ZOOM BAR -->
         <main class="center-canvas-area" id="mainContent">
             <div class="canvas-wrapper" id="canvasWrapper">
                 <canvas id="artCanvas" style="opacity: 0;"></canvas>
             </div>
             
             <div class="zoom-bar" id="zoomBar">
-                <button class="zoom-btn" onclick="adjustZoom(-0.1)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+                <button class="zoom-btn" onclick="adjustZoom(-0.1)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
                 <input type="range" id="slZoom" min="0.1" max="3" step="0.05" value="1" style="width: 80px; padding: 0; margin: 0;">
-                <button class="zoom-btn" onclick="adjustZoom(0.1)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+                <button class="zoom-btn" onclick="adjustZoom(0.1)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
                 <div class="zoom-level" id="zoomLevelText">100%</div>
+                
+                <div class="divider-v"></div>
+                <!-- Fullscreen toggle inside Zoom bar -->
+                <button class="zoom-btn" onclick="toggleFullscreen()" id="btnZoomFullscreen" title="Toggle Fullscreen">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                </button>
             </div>
         </main>
 
-        <!-- RIGHT SIDEBAR -->
         <aside class="sidebar sidebar-right" id="sidebarRight">
             <details class="panel-section hidden pm-card" id="paintModeModule" open>
                 <summary><span class="flex-between" style="gap:6px;"><span class="pm-badge">Active</span> Paint Assistant</span></summary>
@@ -634,36 +636,6 @@
                     </div>
                 </div>
             </details>
-
-            <details class="panel-section" id="appGuideModule" open>
-                <summary>Workflow Guide</summary>
-                <div class="details-content">
-                    <div class="step-card">
-                        <div class="step-num">1</div>
-                        <div class="step-info">
-                            <div class="step-title">Underpainting Wash</div>
-                            <div class="step-desc">Block in base forms using mid-tone.</div>
-                        </div>
-                        <div class="step-swatch" id="swatchStep1"></div>
-                    </div>
-                    <div class="step-card">
-                        <div class="step-num">2</div>
-                        <div class="step-info">
-                            <div class="step-title">Local Color</div>
-                            <div class="step-desc">Apply exact pigment mixture.</div>
-                        </div>
-                        <div class="step-swatch" id="swatchStep2"></div>
-                    </div>
-                    <div class="step-card">
-                        <div class="step-num">3</div>
-                        <div class="step-info">
-                            <div class="step-title">Form Highlights</div>
-                            <div class="step-desc">Blend towards primary light source.</div>
-                        </div>
-                        <div class="step-swatch" id="swatchStep3"></div>
-                    </div>
-                </div>
-            </details>
         </aside>
     </div>
 
@@ -677,7 +649,7 @@
 
 <script>
     // ==========================================================================
-    // 60 FPS LUXURIOUS MORPHING PARTICLE VISUALIZER (FACE, FLOWERS, GEOMETRY, BIRDS)
+    // 60 FPS MORPHING PARTICLE VISUALIZER
     // ==========================================================================
     const visualizerCanvas = document.getElementById('visualizerCanvas');
     const vCtx = visualizerCanvas.getContext('2d');
@@ -756,7 +728,6 @@
             let dy = this.ty - this.y;
             this.x += dx * this.lerpSpeed;
             this.y += dy * this.lerpSpeed;
-
             this.x += Math.sin(Date.now() * 0.002 + this.index) * 0.4;
             this.y += Math.cos(Date.now() * 0.002 + this.index) * 0.4;
         }
@@ -764,18 +735,10 @@
         draw() {
             vCtx.save();
             vCtx.globalAlpha = this.alpha;
-            
-            let neonColors = [
-                'rgba(0, 210, 255, 0.9)',   
-                'rgba(255, 0, 127, 0.9)',   
-                'rgba(163, 113, 247, 0.9)', 
-                'rgba(255, 140, 0, 0.9)',   
-                'rgba(255, 215, 0, 0.9)'    
-            ];
+            let neonColors = ['rgba(0, 210, 255, 0.9)', 'rgba(255, 0, 127, 0.9)', 'rgba(163, 113, 247, 0.9)', 'rgba(255, 140, 0, 0.9)', 'rgba(255, 215, 0, 0.9)'];
             vCtx.fillStyle = neonColors[this.colorGroup % neonColors.length];
             vCtx.shadowColor = neonColors[this.colorGroup % neonColors.length];
             vCtx.shadowBlur = 10;
-
             vCtx.beginPath();
             vCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             vCtx.fill();
@@ -786,48 +749,81 @@
     let initialPts = getShapePoints(shapes[0], particleCount, visualizerCanvas.width, visualizerCanvas.height);
     for (let i = 0; i < particleCount; i++) {
         let p = new VisualizerParticle(i);
-        p.x = initialPts[i].x;
-        p.y = initialPts[i].y;
-        p.tx = initialPts[i].x;
-        p.ty = initialPts[i].y;
-        p.colorGroup = initialPts[i].colorGroup;
+        p.x = initialPts[i].x; p.y = initialPts[i].y; p.tx = initialPts[i].x; p.ty = initialPts[i].y; p.colorGroup = initialPts[i].colorGroup;
         particles.push(p);
     }
 
     function transitionToNextShape() {
         currentShapeIndex = (currentShapeIndex + 1) % shapes.length;
         let newPts = getShapePoints(shapes[currentShapeIndex], particleCount, visualizerCanvas.width, visualizerCanvas.height);
-        
-        particles.forEach((p, i) => {
-            p.tx = newPts[i].x;
-            p.ty = newPts[i].y;
-            p.colorGroup = newPts[i].colorGroup;
-            p.lerpSpeed = Math.random() * 0.025 + 0.012;
-        });
+        particles.forEach((p, i) => { p.tx = newPts[i].x; p.ty = newPts[i].y; p.colorGroup = newPts[i].colorGroup; p.lerpSpeed = Math.random() * 0.025 + 0.012; });
     }
 
     function animateVisualizer() {
         vCtx.fillStyle = 'rgba(0, 0, 0, 0.22)';
         vCtx.fillRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-
         stateTimer++;
-        if (stateTimer > 380) {
-            stateTimer = 0;
-            transitionToNextShape();
-        }
-
-        particles.forEach(p => {
-            p.update();
-            p.draw();
-        });
-
+        if (stateTimer > 380) { stateTimer = 0; transitionToNextShape(); }
+        particles.forEach(p => { p.update(); p.draw(); });
         vizAnimationFrameId = requestAnimationFrame(animateVisualizer);
     }
     animateVisualizer();
 
+    // ==========================================================================
+    // FULLSCREEN & UI TOGGLE LOGIC
+    // ==========================================================================
+    function toggleFullscreen() {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) { 
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) {
+                document.documentElement.webkitRequestFullscreen();
+            }
+        } else { 
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+        }
+    }
+
+    // Listens to standard and webkit fullscreen changes to update icons and UI
+    function handleFullscreenChange() {
+        const isFull = document.fullscreenElement || document.webkitFullscreenElement;
+        const btnNav = document.getElementById('btnFullscreenNav');
+        const btnZoom = document.getElementById('btnZoomFullscreen');
+        
+        if (isFull) {
+            document.body.classList.add('fullscreen-ui-active');
+            if(btnNav) btnNav.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16v3a2 2 0 0 0 2 2h3"/></svg> Exit`;
+            if(btnZoom) btnZoom.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16v3a2 2 0 0 0 2 2h3"/></svg>`;
+        } else {
+            document.body.classList.remove('fullscreen-ui-active');
+            if(btnNav) btnNav.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg> Full`;
+            if(btnZoom) btnZoom.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>`;
+        }
+        
+        // Timeout to ensure canvas resizes properly when UI collapses
+        setTimeout(() => {
+            const maxW = els.wrapper.clientWidth * 0.95; 
+            const maxH = els.wrapper.clientHeight * 0.95;
+            if (state.image) {
+                let dpi = 150;
+                let targetW = Math.round((parseFloat(els.widthInches.value) || 10) * dpi);
+                let targetH = Math.round((parseFloat(els.heightInches.value) || 8) * dpi);
+                state.zoom = Math.min(maxW / targetW, maxH / targetH, 1);
+                applyZoom();
+            }
+        }, 150);
+    }
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+
 
     // ==========================================================================
-    // PRESERVED APPLICATION JAVASCRIPT LOGIC + COATS RED OUTLINE TRANSITION FEATURE
+    // APP LOGIC
     // ==========================================================================
     const state = {
         image: null, brightness: 100, contrast: 100, columns: 4, filter: 'none', 
@@ -844,20 +840,10 @@
         slZoom: document.getElementById('slZoom'), zoomText: document.getElementById('zoomLevelText'),
         previewBlock: document.getElementById('colorPreviewBlock'), colorName: document.getElementById('colorName'), recipeBars: document.getElementById('recipeBars'), 
         aiPaletteContainer: document.getElementById('aiPaletteContainer'), aiPaletteModule: document.getElementById('aiPaletteModule'),
-        pmModule: document.getElementById('paintModeModule'), appGuideModule: document.getElementById('appGuideModule'),
+        pmModule: document.getElementById('paintModeModule'),
         analysisLensModule: document.getElementById('analysisLensModule'),
         widthInches: document.getElementById('inputWidthInches'), heightInches: document.getElementById('inputHeightInches')
     };
-
-    function toggleFullscreen() {
-        if (!document.fullscreenElement) { 
-            document.documentElement.requestFullscreen(); 
-            document.getElementById('btnFullscreen').innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16v3a2 2 0 0 0 2 2h3"/></svg> Exit`;
-        } else { 
-            document.exitFullscreen(); 
-            document.getElementById('btnFullscreen').innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg> Full`; 
-        }
-    }
 
     function processImageFile(file) {
         if (!file) return;
@@ -926,7 +912,6 @@
             btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Exit Paint Mode`;
             btn.classList.add('active-mode');
             els.pmModule.classList.remove('hidden');
-            els.appGuideModule.classList.add('hidden'); 
             els.analysisLensModule.style.opacity = "0.3"; 
             els.analysisLensModule.style.pointerEvents = "none";
             updateCoatUI();
@@ -934,7 +919,6 @@
             btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18.37 2.63-1.42 1.42-3.18-3.18a2 2 0 0 0-2.82 0l-8.5 8.5a2 2 0 0 0 0 2.82l6.37 6.37a2 2 0 0 0 2.82 0l8.5-8.5a2 2 0 0 0 0-2.82l-3.18-3.18 1.42-1.42a2 2 0 0 0-2.83-2.83Z"/><path d="m2 22 4-4"/></svg> Enter Paint Mode`;
             btn.classList.remove('active-mode');
             els.pmModule.classList.add('hidden');
-            els.appGuideModule.classList.remove('hidden');
             els.analysisLensModule.style.opacity = "1";
             els.analysisLensModule.style.pointerEvents = "auto";
         }
@@ -1072,9 +1056,7 @@
                         else if (y < h - 1 && coatMap[(y + 1) * w + x] !== coatIdx) isEdge = true;
 
                         if (isEdge) {
-                            data[i] = 255;   // Bright Red R
-                            data[i+1] = 0;   // Green G
-                            data[i+2] = 0;   // Blue B
+                            data[i] = 255; data[i+1] = 0; data[i+2] = 0; 
                         } else if (coatIdx === current) {
                             data[i] = r; data[i+1] = g; data[i+2] = b; 
                         } else {
@@ -1166,7 +1148,6 @@
 
         els.recipeBars.innerHTML = createAcrylicBar('Titanium White', Math.round(w*100), '#ffffff') + createAcrylicBar('Phthalo Blue', Math.round(c*100), '#0ea5e9') + createAcrylicBar('Quin Magenta', Math.round(m*100), '#db2777') + createAcrylicBar('Cad Yellow', Math.round(yel*100), '#eab308') + createAcrylicBar('Mars Black', Math.round(k*100), '#555555');
         setTimeout(() => { els.recipeBars.querySelectorAll('.recipe-bar').forEach(bar => { const fw = bar.style.width; bar.style.width = '0%'; requestAnimationFrame(() => bar.style.width = fw); }); }, 10);
-        document.getElementById('swatchStep1').style.backgroundColor = `rgb(${Math.max(0,r-40)}, ${Math.max(0,g-40)}, ${Math.max(0,b-40)})`; document.getElementById('swatchStep2').style.backgroundColor = `rgb(${r}, ${g}, ${b})`; document.getElementById('swatchStep3').style.backgroundColor = `rgb(${Math.min(255,r+50)}, ${Math.min(255,g+50)}, ${Math.min(255,b+50)})`;
     }
 
     function downloadImage() {
